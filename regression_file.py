@@ -19,3 +19,5 @@ label_array = np.array(data[to_be_predicted])#results, the value of G3
 
 #Taking attributes and labels (in arrays above) and splitting them up into 4 different arrays. Both attribute_train and label_train will be sections of the respective arrays. The test data will test the accuracy of the algorithm/model. 10% of the data (or 0.1) will be reserved for "test samples"
 attribute_train, label_train, attribute_test, label_test = sklearn.model_selection.train_test_split(attribute_array, label_array, test_size=0.1)
+
+#i have github tbh
