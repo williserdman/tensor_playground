@@ -33,7 +33,7 @@ def calculation():
         #We have more than 2 variables, so have to make a multi-dimensional line of best fit, using multiple variables
         attribute_train, attribute_test, label_train, label_test = sklearn.model_selection.train_test_split(attribute_array, label_array, test_size=0.1)
 
-        line_of_best_fit = linear_model.LinearRegression()
+        line_of_best_fit = linear_model.LinearRegression()#line_of_best_fit is the model!
 
         #This is actually finding the line of best fit (attribute_train=x and label_train=y)
         line_of_best_fit.fit(attribute_train, label_train)
