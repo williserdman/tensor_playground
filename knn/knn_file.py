@@ -42,6 +42,6 @@ for i, l in enumerate(x_test):
     print(names[prediction[i]], end = ' | ')
     print(l, end = ' | ')
     print(names[y_test[i]], end = ' | ')
-    model.kneighbors([x_test[i]], 9)#kneighbors takes a 2 dimensional array, so we have to turn our input into one
+    #model.kneighbors([x_test[i]], 9)#kneighbors takes a 2 dimensional array, so we have to turn our input into one
 
 
