@@ -31,3 +31,5 @@ def bench_k_means(estimator, name, data):
 model = KMeans(n_clusters = k, init = 'random')#kmeans++ is another option instead of random. the centroids start better spaced. n_init, the number of the times run (10 default)
 
 bench_k_means(model, '1', data)
+
+
