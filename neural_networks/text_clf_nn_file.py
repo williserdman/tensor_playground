@@ -4,6 +4,10 @@ from token import ENCODING
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
+import os
+
+#Changing working directory
+#os.chdir("neural_networks\model.h5")
 
 data = keras.datasets.imdb
 
@@ -57,7 +61,7 @@ print(result)
 model.save("model.h5", "~/Documents/coding/tensor_playground/neural_networks/")#h5 is the saved model for keras and tensorflow
 '''#model's been run once, and have saved it so commenting this all out as we don't need to train the model again
 
-model = keras.models.load_model("model.h5")#allows you to tweak hyper-parameters and save only the best one#the files are messed up big time, has to do with current working directory
+model = keras.models.load_model("neural_networks\model.h5")#allows you to tweak hyper-parameters and save only the best one#the files are messed up big time, has to do with current working directory
 
 def review_encode(in_string):
     encoded = [1]#all other data starts with 1
@@ -69,7 +73,7 @@ def review_encode(in_string):
     return encoded
 
 #Inputting a review
-with open("review.txt", 'r') as f:#no fucking clue whats going on rn, cant define path anymore?
+with open("neural_networks\\review.txt", 'r') as f:#no fucking clue whats going on rn, cant define path anymore?
     for line in f.readlines():#only one line (text wrapped, but makes easy if there are more reviews)
         #Have to convert string to numbers
         nline = line.replace(",", "").replace(".", "").replace("(", "").replace(")", "").replace(":", "").replace("\"","").strip().split(" ")#removes random characters, prob better way to do this
