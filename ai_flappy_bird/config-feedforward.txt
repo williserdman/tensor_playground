@@ -1,0 +1,105 @@
+
+[NEAT]
+fitness_criterion     = max 
+#what function used to determine best birds 
+fitness_threshold     = 100 
+#what fitness level any single bird needs to reach before the program is terminated/marked as complete
+pop_size              = 20 
+#population size (each iteration)
+reset_on_extinction   = False 
+#NEAT seperates different architectures into "species"
+
+[DefaultGenome] #every population member is called a genome
+# node activation options
+# genes are connections between nodes
+activation_default      = tanh 
+activation_mutate_rate  = 0.0 
+#% chance that a genome will have a different activation function
+activation_options      = tanh 
+#options that we can choose from  (what the mutate rate will pick from)
+
+# node aggregation options #check docs 
+aggregation_default     = sum 
+aggregation_mutate_rate = 0.0
+aggregation_options     = sum
+
+# node bias options # initial connections, and how likely they are to change
+bias_init_mean          = 0.0
+bias_init_stdev         = 1.0
+bias_max_value          = 30.0 
+#upper limit of bias
+bias_min_value          = -30.0 
+#lower limit of bias
+bias_mutate_power       = 0.5 
+#how likely these things are to change
+bias_mutate_rate        = 0.7 
+#^
+bias_replace_rate       = 0.1 
+#^
+
+# genome compatibility options 
+#check docs 
+compatibility_disjoint_coefficient = 1.0
+compatibility_weight_coefficient   = 0.5
+
+# connection add/remove rates
+conn_add_prob           = 0.5 
+#how likely we are to add a new connection
+conn_delete_prob        = 0.5 
+#how likely we are to remove a connection
+
+# connection enable options
+enabled_default         = True 
+#we can have connections that are sometimes enabled or disabled
+enabled_mutate_rate     = 0.01 
+#chance a connection will be dectivated
+
+feed_forward            = True 
+#feed forward neural network
+initial_connection      = full 
+#fully connected layers to start
+
+# node add/remove rates 
+#chance of adding/removing node
+node_add_prob           = 0.2
+node_delete_prob        = 0.2
+
+# network parameters 
+num_hidden              = 0 
+#default hidden
+num_inputs              = 3 
+#default input
+num_outputs             = 1 
+#default output
+
+# node response options #more tweaks (docs if wanted)
+response_init_mean      = 1.0
+response_init_stdev     = 0.0
+response_max_value      = 30.0
+response_min_value      = -30.0
+response_mutate_power   = 0.0
+response_mutate_rate    = 0.0
+response_replace_rate   = 0.0
+
+# connection weight options
+weight_init_mean        = 0.0
+weight_init_stdev       = 1.0
+weight_max_value        = 30
+weight_min_value        = -30
+weight_mutate_power     = 0.5
+weight_mutate_rate      = 0.8
+weight_replace_rate     = 0.1
+
+[DefaultSpeciesSet]
+compatibility_threshold = 3.0
+
+[DefaultStagnation] 
+species_fitness_func = max 
+#max fitness in species
+max_stagnation       = 20 
+#generations to go without increasing fitness (by species)
+species_elitism      = 2
+
+[DefaultReproduction] #check docs for any not spoken about
+elitism            = 2
+survival_threshold = 0.2

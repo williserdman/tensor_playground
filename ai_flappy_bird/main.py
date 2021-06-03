@@ -1,8 +1,8 @@
 
 #check out gitpod
 import pygame
-pygame.init()
-import neat
+pygame.font.init()
+import neat #starts very simple, then gets more complex if it needs to
 import time
 import os
 import random
@@ -148,29 +148,41 @@ class Base(): #is a class because it's going to be moving?
         win.blit(self.IMG, (self.x1, self.y))
         win.blit(self.IMG, (self.x2, self.y))
 
-def win_draw(win, bird, pipes, base, score):
+def win_draw(win, birds, pipes, base, score):
     win.blit(BG_IMG, (0, 0))
     for pipe in pipes: #can be more than one pipe on the sceen at a time
         pipe.draw(win)
 
+    pygame.font.init()
     text = FONT.render("Score: " + str(score), 1, (0, 0, 0)) #1 for anti aliasing on?
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
-
     base.draw(win)
-    bird.draw(win)
+    for bird in birds:
+        bird.draw(win)
     pygame.display.update()
 
-def main(): #runs main loop
+def main(genomes, config): #runs main loop
+    nets = [] #keeping track of the neural network that control each bird
+    ge = [] #keep track of genomes based on what they do
+
     BASE_HEIGHT = 650
     PIPE_HEIGHT = 600
     BIRD_X = 200
     BIRD_Y = 300
-    bird = Bird(BIRD_X, BIRD_Y)
+    birds = []
     base = Base(BASE_HEIGHT) 
     pipes = [Pipe(PIPE_HEIGHT)]
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     clock = pygame.time.Clock()
     score = 0
+
+    for i, g in genomes:
+        g.fitness = 0 #setting initial fitness
+        net = neat.nn.FeedForwardNetwork.create(g, config)
+        nets.append(net)
+        birds.append(Bird(BIRD_X, BIRD_Y))
+        ge.append(g)
+
 
     run = True
     while run:
@@ -179,15 +191,36 @@ def main(): #runs main loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.quit()
+
+        pipe_ind = 0
+        if len(birds) > 0: #checking if there are birds
+            if len(pipes) > 1 and birds[0].x > pipes[0].x + pipes[0].PIPE_TOP.get_width(): #get the first bird in the list's x position (all x positions are going to be the same) if we've passed a pipe, move on to the second one
+                pipe_ind = 1 #pipe index
+
+        for i, bird in enumerate(birds):
+            bird.move()
+            ge[i].fitness += 0.1
+
+            output = nets[i].activate((bird.y, abs(bird.y - pipes[pipe_ind].height), abs(bird.y - pipes[pipe_ind].bottom))) #output will be a list
+
+            if output[0] > 0.5:
+                bird.jump()
+
         
         #bird.move()
         base.move()
         rem = [] #list of pipes to be removes
         add_pipe = False
         for pipe in pipes:
-
-            if pipe.collision(bird):
-                print("hit")
+            pipe.move()
+            for i, bird in enumerate(birds):
+                if pipe.collision(bird):
+                    ge[i].fitness -= 1
+                    print(i, "hit pipe")
+                    birds.pop(i)
+                    nets.pop(i)
+                    ge.pop(i) #genomes assosiated with birds
 
             if pipe.x + pipe.PIPE_TOP.get_width() < 0:
                 rem.append(pipe)
@@ -195,21 +228,41 @@ def main(): #runs main loop
             if not pipe.passed and pipe.x < bird.x:
                 pipe.passed = True
                 add_pipe = True
-            
-            pipe.move()
-        
+
         if add_pipe:
+            for g in ge:
+                g.fitness += 5
             score += 1
             pipes.append(Pipe(PIPE_HEIGHT))
         
         for r in rem:
             pipes.remove(r)
+        
+        for i, bird in enumerate(birds):
+            if bird.y + bird.img.get_height() >= BASE_HEIGHT or bird.y < 0:
+                ge[i].fitness -= 1
+                birds.pop(i)
+                nets.pop(i)
+                ge.pop(i)
+                
 
-        if bird.y + bird.img.get_height() >= BASE_HEIGHT:
-            print("floor")
-
-        win_draw(win, bird, pipes, base, score)
+        win_draw(win, birds, pipes, base, score)
     
     pygame.quit()
 
-main()
+def run(path_to_file):
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, path_to_file)
+
+    #p for population
+    p = neat.Population(config)
+
+    #reporters give some output
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+
+    winner = p.run(main, 50)
+
+if __name__ == '__main__':
+    path_to_file = "ai_flappy_bird\config-feedforward.txt"
+    run(path_to_file)

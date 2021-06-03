@@ -81,4 +81,5 @@ with open("neural_networks\\review.txt", 'r') as f:#no fucking clue whats going 
         encoded = keras.preprocessing.sequence.pad_sequences([encoded], value=word_index['<PAD>'], padding='post', maxlen=256)
         preditciton = model.predict(encoded)
         print(line)
-        print(preditciton[0])
+        print(preditciton, end='\n\n')
+
