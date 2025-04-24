@@ -73,7 +73,7 @@ def review_encode(in_string):
     return encoded
 
 #Inputting a review
-with open("neural_networks\\review.txt", 'r') as f:#no fucking clue whats going on rn, cant define path anymore?#got it! use "relative path"
+with open("neural_networks\\review.txt", 'r') as f:# use "relative path"
     for line in f.readlines():#only one line (text wrapped, but makes easy if there are more reviews)
         #Have to convert string to numbers
         nline = line.replace(",", "").replace(".", "").replace("(", "").replace(")", "").replace(":", "").replace("\"","").strip().split(" ")#removes random characters, prob better way to do this
